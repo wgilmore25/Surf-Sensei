@@ -1,0 +1,5 @@
+{
+  "name": "SurfSensei",
+  "description": "An advanced AI-powered surf spot advisor that helps surfers choose where to surf, what board to bring, and when conditions will be best, based on real-time data.",
+  "requestFramePermissions": []
+}
