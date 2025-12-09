@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { getSurfRecommendation } from './services/geminiService';
 import type { SurfData, FeedbackData } from './types';
@@ -8,6 +7,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import { WaveIcon } from './components/icons/WaveIcon';
 import ApiKeyPrompt from './components/ApiKeyPrompt';
 import FeedbackForm from './components/FeedbackForm';
+import NewsletterForm from './components/NewsletterForm';
 
 const App: React.FC = () => {
   const now = new Date();
@@ -16,17 +16,17 @@ const App: React.FC = () => {
 
   const [surfData, setSurfData] = useState<SurfData>({
     sessionDateTime: defaultDateTime,
-    spots: 'Huntington Pier vs 56th Street Jetty',
-    swellHeight: '3-4',
-    swellPeriod: '12',
-    swellDirection: 'SW',
-    windSpeed: '5',
-    windDirection: 'NW',
-    tideHeight: '2.5',
+    spots: '',
+    swellHeight: '',
+    swellPeriod: '',
+    swellDirection: '',
+    windSpeed: '',
+    windDirection: '',
+    tideHeight: '',
     tideDirection: 'rising',
     skillLevel: 'Intermediate',
-    bodyWeight: '197',
-    userBoards: '6’0 31L shortboard, 5’8 33L fish, 7’0 mid-length',
+    bodyWeight: '',
+    userBoards: '',
   });
 
   const [recommendation, setRecommendation] = useState<string>('');
@@ -37,7 +37,7 @@ const App: React.FC = () => {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
-    const key = process.env.API_KEY || sessionStorage.getItem('gemini_api_key');
+    const key = import.meta.env.VITE_API_KEY || sessionStorage.getItem('gemini_api_key');
     if (key) {
       setApiKey(key);
       setIsApiKeyMissing(false);
@@ -116,11 +116,14 @@ const App: React.FC = () => {
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <InputForm
-            initialData={surfData}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
+          <div className="space-y-8">
+            <InputForm
+              initialData={surfData}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+            />
+            <NewsletterForm />
+          </div>
 
           <div className="relative min-h-[400px] lg:min-h-0 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col">
             {isLoading && (

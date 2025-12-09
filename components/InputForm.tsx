@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import type { SurfData } from '../types';
 import { getSurfConditions } from '../services/geminiService';
@@ -55,13 +54,13 @@ const InputForm: React.FC<InputFormProps> = ({ initialData, onSubmit, isLoading 
             sessionDateTime: prev.sessionDateTime
         }));
     } catch (err) {
-        setAutofillError('Failed to fetch NOAA data.');
+        setAutofillError('Failed to fetch live data.');
     } finally {
         setIsAutofilling(false);
     }
   };
 
-  const commonInputClasses = "w-full bg-slate-800/50 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-colors";
+  const commonInputClasses = "w-full bg-slate-800/50 border border-slate-600 rounded-md p-2 text-white placeholder-slate-400 focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 transition-colors";
 
   return (
     <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl">
@@ -73,21 +72,21 @@ const InputForm: React.FC<InputFormProps> = ({ initialData, onSubmit, isLoading 
                 type="text"
                 name="spots"
                 id="spots"
-                placeholder="e.g., Huntington Pier vs 56th Street Jetty"
+                placeholder="ex. Huntington Pier vs 56th Street Jetty"
                 value={formData.spots}
                 onChange={handleChange}
                 className={commonInputClasses}
                 />
             </div>
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-2 flex items-center justify-between flex-wrap gap-2">
                  <button
                     type="button"
                     onClick={handleAutoFill}
                     disabled={isAutofilling || isLoading}
-                    className="text-xs flex items-center gap-1.5 text-cyan-400 hover:text-cyan-300 disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-900/30 border border-cyan-500/30 text-cyan-300 text-xs font-medium hover:bg-cyan-900/50 hover:border-cyan-400 transition-all disabled:opacity-50"
                 >
                     <MagicIcon className={`w-4 h-4 ${isAutofilling ? 'animate-pulse' : ''}`} />
-                    {isAutofilling ? 'Fetching NOAA Data...' : 'Auto-fill conditions from NOAA'}
+                    {isAutofilling ? 'Scanning Live Conditions...' : 'Live Conditions'}
                 </button>
                 {autofillError && <span className="text-xs text-red-400">{autofillError}</span>}
             </div>
@@ -112,26 +111,26 @@ const InputForm: React.FC<InputFormProps> = ({ initialData, onSubmit, isLoading 
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <FormField label="Swell Height (ft)" id="swellHeight">
-                  <input type="text" name="swellHeight" id="swellHeight" value={formData.swellHeight} onChange={handleChange} className={commonInputClasses} />
+                  <input type="text" name="swellHeight" id="swellHeight" placeholder="ex. 3-4" value={formData.swellHeight} onChange={handleChange} className={commonInputClasses} />
                 </FormField>
                 <FormField label="Swell Period (s)" id="swellPeriod">
-                  <input type="text" name="swellPeriod" id="swellPeriod" value={formData.swellPeriod} onChange={handleChange} className={commonInputClasses} />
+                  <input type="text" name="swellPeriod" id="swellPeriod" placeholder="ex. 12" value={formData.swellPeriod} onChange={handleChange} className={commonInputClasses} />
                 </FormField>
                 <FormField label="Swell Direction" id="swellDirection">
-                  <input type="text" name="swellDirection" id="swellDirection" value={formData.swellDirection} onChange={handleChange} className={commonInputClasses} />
+                  <input type="text" name="swellDirection" id="swellDirection" placeholder="ex. SW" value={formData.swellDirection} onChange={handleChange} className={commonInputClasses} />
                 </FormField>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField label="Wind Speed (mph)" id="windSpeed">
-                <input type="number" name="windSpeed" id="windSpeed" value={formData.windSpeed} onChange={handleChange} className={commonInputClasses} />
+                <input type="number" name="windSpeed" id="windSpeed" placeholder="ex. 5" value={formData.windSpeed} onChange={handleChange} className={commonInputClasses} />
               </FormField>
               <FormField label="Wind Direction" id="windDirection">
-                <input type="text" name="windDirection" id="windDirection" value={formData.windDirection} onChange={handleChange} className={commonInputClasses} />
+                <input type="text" name="windDirection" id="windDirection" placeholder="ex. NW" value={formData.windDirection} onChange={handleChange} className={commonInputClasses} />
               </FormField>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField label="Tide Height (ft)" id="tideHeight">
-                <input type="number" step="0.1" name="tideHeight" id="tideHeight" value={formData.tideHeight} onChange={handleChange} className={commonInputClasses} />
+                <input type="number" step="0.1" name="tideHeight" id="tideHeight" placeholder="ex. 2.5" value={formData.tideHeight} onChange={handleChange} className={commonInputClasses} />
               </FormField>
               <FormField label="Tide Direction" id="tideDirection">
                 <select name="tideDirection" id="tideDirection" value={formData.tideDirection} onChange={handleChange} className={commonInputClasses}>
@@ -155,14 +154,14 @@ const InputForm: React.FC<InputFormProps> = ({ initialData, onSubmit, isLoading 
                 </select>
               </FormField>
               <FormField label="Weight (lbs)" id="bodyWeight">
-                <input type="number" name="bodyWeight" id="bodyWeight" value={formData.bodyWeight} onChange={handleChange} className={commonInputClasses} />
+                <input type="number" name="bodyWeight" id="bodyWeight" placeholder="ex. 197" value={formData.bodyWeight} onChange={handleChange} className={commonInputClasses} />
               </FormField>
             </div>
             <FormField label="Boards You Own" id="userBoards">
                 <textarea
                   name="userBoards"
                   id="userBoards"
-                  placeholder="e.g., 6'0 31L shortboard, 5'8 fish, 7'0 mid-length"
+                  placeholder="ex. 6'0 31L shortboard, 5'8 fish, 7'0 mid-length"
                   value={formData.userBoards}
                   onChange={handleChange}
                   rows={3}
