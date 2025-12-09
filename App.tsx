@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getSurfRecommendation } from './services/geminiService';
 import type { SurfData, FeedbackData } from './types';
 import InputForm from './components/InputForm';
 import RecommendationDisplay from './components/RecommendationDisplay';
 import LoadingSpinner from './components/LoadingSpinner';
 import { WaveIcon } from './components/icons/WaveIcon';
-import ApiKeyPrompt from './components/ApiKeyPrompt';
 import FeedbackForm from './components/FeedbackForm';
 import NewsletterForm from './components/NewsletterForm';
 
@@ -32,25 +31,7 @@ const App: React.FC = () => {
   const [recommendation, setRecommendation] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [apiKey, setApiKey] = useState<string | null>(null);
-  const [isApiKeyMissing, setIsApiKeyMissing] = useState<boolean>(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
-
-  useEffect(() => {
-    const key = import.meta.env.VITE_API_KEY || sessionStorage.getItem('gemini_api_key');
-    if (key) {
-      setApiKey(key);
-      setIsApiKeyMissing(false);
-    } else {
-      setIsApiKeyMissing(true);
-    }
-  }, []);
-
-  const handleApiKeySubmit = (key: string) => {
-    sessionStorage.setItem('gemini_api_key', key);
-    setApiKey(key);
-    setIsApiKeyMissing(false);
-  };
 
   const handleSubmit = async (data: SurfData) => {
     setIsLoading(true);
@@ -64,7 +45,7 @@ const App: React.FC = () => {
       let errorMessage = 'Failed to get recommendation. Please try again.';
       if (err instanceof Error) {
         if (err.message.toLowerCase().includes('api key')) {
-          errorMessage = 'Failed to get recommendation. Please check your API key and try again.';
+          errorMessage = 'Failed to get recommendation. Please check your API key configuration.';
         } else if (err.message.toLowerCase().includes('network') || err.message.toLowerCase().includes('fetch')) {
           errorMessage = 'A network error occurred. Please check your connection and try again.';
         }
@@ -97,10 +78,6 @@ const App: React.FC = () => {
 
     setFeedbackSubmitted(true);
   };
-
-  if (isApiKeyMissing) {
-    return <ApiKeyPrompt onApiKeySubmit={handleApiKeySubmit} />;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-cyan-900 to-slate-900 text-white font-sans p-4 sm:p-6 lg:p-8">

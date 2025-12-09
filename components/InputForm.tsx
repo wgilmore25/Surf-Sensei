@@ -122,7 +122,7 @@ const InputForm: React.FC<InputFormProps> = ({ initialData, onSubmit, isLoading 
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField label="Wind Speed (mph)" id="windSpeed">
-                <input type="number" name="windSpeed" id="windSpeed" placeholder="ex. 5" value={formData.windSpeed} onChange={handleChange} className={commonInputClasses} />
+                <input type="text" name="windSpeed" id="windSpeed" placeholder="ex. 5" value={formData.windSpeed} onChange={handleChange} className={commonInputClasses} />
               </FormField>
               <FormField label="Wind Direction" id="windDirection">
                 <input type="text" name="windDirection" id="windDirection" placeholder="ex. NW" value={formData.windDirection} onChange={handleChange} className={commonInputClasses} />
@@ -130,7 +130,7 @@ const InputForm: React.FC<InputFormProps> = ({ initialData, onSubmit, isLoading 
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField label="Tide Height (ft)" id="tideHeight">
-                <input type="number" step="0.1" name="tideHeight" id="tideHeight" placeholder="ex. 2.5" value={formData.tideHeight} onChange={handleChange} className={commonInputClasses} />
+                <input type="text" name="tideHeight" id="tideHeight" placeholder="ex. 2.5" value={formData.tideHeight} onChange={handleChange} className={commonInputClasses} />
               </FormField>
               <FormField label="Tide Direction" id="tideDirection">
                 <select name="tideDirection" id="tideDirection" value={formData.tideDirection} onChange={handleChange} className={commonInputClasses}>
@@ -154,7 +154,7 @@ const InputForm: React.FC<InputFormProps> = ({ initialData, onSubmit, isLoading 
                 </select>
               </FormField>
               <FormField label="Weight (lbs)" id="bodyWeight">
-                <input type="number" name="bodyWeight" id="bodyWeight" placeholder="ex. 197" value={formData.bodyWeight} onChange={handleChange} className={commonInputClasses} />
+                <input type="text" name="bodyWeight" id="bodyWeight" placeholder="ex. 197" value={formData.bodyWeight} onChange={handleChange} className={commonInputClasses} />
               </FormField>
             </div>
             <FormField label="Boards You Own" id="userBoards">

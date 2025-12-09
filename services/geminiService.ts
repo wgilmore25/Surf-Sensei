@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from '@google/genai';
 import type { SurfData } from '../types';
 
@@ -77,13 +76,7 @@ ${corrections.map((c: string, i: number) => `${i + 1}. "${c}"`).join('\n')}
 }
 
 export async function getSurfRecommendation(formData: SurfData): Promise<string> {
-  const apiKey = process.env.API_KEY || sessionStorage.getItem('gemini_api_key');
-  
-  if (!apiKey) {
-    throw new Error("API key is missing. Please make sure it is configured correctly.");
-  }
-  
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   // Dynamically update the system prompt with user corrections from local storage
   const corrections = getPreviousCorrections();
@@ -127,9 +120,7 @@ Give me:
 }
 
 export async function getSurfConditions(locationQuery: string): Promise<Partial<SurfData>> {
-  const apiKey = process.env.API_KEY || sessionStorage.getItem('gemini_api_key');
-  if (!apiKey) throw new Error("API key is missing.");
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   const prompt = `
     You are an expert surf forecaster.
@@ -148,7 +139,7 @@ export async function getSurfConditions(locationQuery: string): Promise<Partial<
     - Swell Height (e.g., "3-4")
     - Swell Period (e.g., "14")
     - Swell Direction (e.g., "W" or "270 deg")
-    - Wind Speed (e.g., "5")
+    - Wind Speed (e.g., "5" or "5-10")
     - Wind Direction (e.g., "NW")
     - Tide Height (e.g., "2.5")
     - Tide Direction ("rising" or "falling")
@@ -158,11 +149,12 @@ export async function getSurfConditions(locationQuery: string): Promise<Partial<
       "swellHeight": "string",
       "swellPeriod": "string",
       "swellDirection": "string",
-      "windSpeed": "string",
+      "windSpeed": "string (number or range only, NO units like 'mph')",
       "windDirection": "string",
-      "tideHeight": "string",
+      "tideHeight": "string (number only, NO units like 'ft')",
       "tideDirection": "string (must be 'rising' or 'falling')"
     }
+    IMPORTANT: Do NOT include units (ft, s, mph) in the values for windSpeed or tideHeight, or the form will fail to populate.
     Do not include any markdown formatting or backticks in your response, just the raw JSON string.
   `;
 
@@ -180,7 +172,19 @@ export async function getSurfConditions(locationQuery: string): Promise<Partial<
 
     // Clean markdown if present
     const jsonStr = text.replace(/```json/g, '').replace(/```/g, '').trim();
-    const rawData = JSON.parse(jsonStr);
+    
+    let rawData;
+    try {
+        rawData = JSON.parse(jsonStr);
+    } catch (e) {
+        // Fallback: try to find JSON object brace to brace if model included chatter
+        const match = jsonStr.match(/\{[\s\S]*\}/);
+        if (match) {
+            rawData = JSON.parse(match[0]);
+        } else {
+            throw new Error("Invalid JSON format");
+        }
+    }
     
     // Normalize tide direction to match the literal type
     const normalizedTideDirection = rawData.tideDirection?.toLowerCase().includes('rising') 
